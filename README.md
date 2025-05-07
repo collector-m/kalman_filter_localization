@@ -1,5 +1,4 @@
 # Kalman Filter Localization  
-![CI](https://github.com/rsasaki0109/kalman_filter_localization/workflows/CI/badge.svg)  
 Kalman Filter Localization  is a ros2 package of Kalman Filter Based Localization in 3D using GNSS/IMU/Odometry(Visual Odometry/Lidar Odometry).
 
 ## node
@@ -31,7 +30,7 @@ ekf_localization_node
 [rosbag demo data(ROS1)](https://drive.google.com/file/d/1CYuip5dApvcF-xrB2f5s8pdBu7MGCDxP/view)
 
 ```
-rviz2 -d src/kalman_filter_localization/config/ekfl_demo.rviz
+rviz2 -d src/kalman_filter_localization/rviz/ekfl_demo.rviz
 ```
 
 ```
@@ -49,4 +48,12 @@ ros2 bag play -s rosbag_v2 test.bag
 
 ![demo](./images/demo_ekfl.gif)    
 blue:initial pose, red:gnss pose, green: fusion pose
+
+## references
+
+- K Feng,"A New Quaternion-Based Kalman Filter",2017
+- Joan Solà,"Quaternion kinematics for the error-state Kalman filter",2017
+- Daniel Choukroun et al,"A Novel Quaternion Kalman Filter",2006
+- An Improved EKF - The Error State Extended Kalman Filter
+- Weikun Zhen, Sam Zeng, and Sebastian Scherer. "Robust Localization and Localizability Estimation with a Rotating Laser Scanner" , 2017.
 

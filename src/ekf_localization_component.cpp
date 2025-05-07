@@ -74,61 +74,6 @@ EkfLocalizationComponent::EkfLocalizationComponent(const rclcpp::NodeOptions & o
   declare_parameter("use_odom", false);
   get_parameter("use_odom", use_odom_);
 
-  set_on_parameters_set_callback(
-    [this](const std::vector<rclcpp::Parameter> params)
-    -> rcl_interfaces::msg::SetParametersResult
-    {
-      auto results = std::make_shared<rcl_interfaces::msg::SetParametersResult>();
-      for (auto param : params) {
-        if (param.get_name() == "var_imu_w") {
-          if (var_imu_w_ > 0) {
-            var_imu_w_ = param.as_double();
-            results->successful = true;
-            results->reason = "";
-          } else {
-            results->successful = false;
-            results->reason = "var_imu_w must over 0";
-          }
-        }
-        if (param.get_name() == "var_imu_acc") {
-          if (var_imu_acc_ > 0) {
-            var_imu_acc_ = param.as_double();
-            results->successful = true;
-            results->reason = "";
-          } else {
-            results->successful = false;
-            results->reason = "var_imu_acc must over 0";
-          }
-        }
-        if (param.get_name() == "var_gnss_xy") {
-          if (var_gnss_xy_ > 0) {
-            var_gnss_xy_ = param.as_double();
-            results->successful = true;
-            results->reason = "";
-          } else {
-            results->successful = false;
-            results->reason = "var_gnss_xy must over 0";
-          }
-        }
-        if (param.get_name() == "var_gnss_z") {
-          if (var_gnss_z_ > 0) {
-            var_gnss_z_ = param.as_double();
-            results->successful = true;
-            results->reason = "";
-          } else {
-            results->successful = false;
-            results->reason = "var_gnss_z must over 0";
-          }
-        }
-      }
-      if (!results->successful) {
-        results->successful = false;
-        results->reason = "";
-      }
-      return *results;
-    }
-  );
-
   ekf_.setVarImuGyro(var_imu_w_);
   ekf_.setVarImuAcc(var_imu_acc_);
   var_gnss_ << var_gnss_xy_, var_gnss_xy_, var_gnss_z_;
@@ -190,6 +135,9 @@ EkfLocalizationComponent::EkfLocalizationComponent(const rclcpp::NodeOptions & o
           transformed_msg.linear_acceleration.z = acc_out.vector.z;
           predictUpdate(transformed_msg);
         } catch (tf2::TransformException & e) {
+          RCLCPP_ERROR(this->get_logger(), "%s", e.what());
+          return;
+        } catch (std::runtime_error & e) {
           RCLCPP_ERROR(this->get_logger(), "%s", e.what());
           return;
         }
